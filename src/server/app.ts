@@ -10,7 +10,7 @@ import {
   AccountController,
   BaseController,
   HealthCheckController,
-  TodoController,
+  TodoController
 } from '@controllers';
 import { ErrorHandler } from '@middleware';
 import { EventListeners, logger } from '@server';
@@ -48,11 +48,11 @@ export class App {
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.setHeader(
         'Access-Control-Allow-Methods',
-        'GET, POST, OPTIONS, PUT, PATCH, DELETE'
+        'GET, POST, OPTIONS, PUT, PATCH, DELETE',
       );
       res.setHeader(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, Accept-Language'
+        'Content-Type, Authorization, Accept-Language',
       );
       next();
     });
@@ -65,18 +65,17 @@ export class App {
         expressWinston.logger({
           winstonInstance: logger,
           meta: false,
-          msg: "request - {{req.ip}} - {{res.statusCode}} - {{req.method}} - {{res.responseTime}}ms - {{req.url}} - {{req.headers['user-agent']}}",
+          msg:
+            "request - {{req.ip}} - {{res.statusCode}} - {{req.method}} - {{res.responseTime}}ms - {{req.url}} - {{req.headers['user-agent']}}",
           expressFormat: false,
           colorize: true,
-        })
+        }),
       );
     }
 
-    this.expressApp.use(
-      express.urlencoded({
-        extended: true,
-      })
-    );
+    this.expressApp.use(express.urlencoded({
+      extended: true
+    }));
     this.expressApp.use(express.json());
   }
 
@@ -86,7 +85,7 @@ export class App {
     this.expressApp.use(
       expressWinston.errorLogger({
         winstonInstance: logger,
-      })
+      }),
     );
   }
 

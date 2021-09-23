@@ -1,5 +1,4 @@
 import { AccountRepository } from './account-repository';
-import { TodoRepository} from './todo-repository';
+import { TodoRepository } from './todo-repository';
 
-export { AccountRepository };
-export { TodoRepository };
+export { AccountRepository, TodoRepository };

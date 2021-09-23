@@ -7,9 +7,10 @@ export class TodoItem extends BaseModel {
   constructor(json?: any) {
     super(json);
     if (json) {
-      this.title = json.title;
+      this.title = json.title
     }
   }
+
   public serialize(): LooseObject {
     return {
       id: this._id,

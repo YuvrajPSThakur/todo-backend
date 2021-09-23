@@ -1,6 +1,6 @@
-import { BaseController } from '@controllers';
+import { BaseController } from './base-controller';
+import { NextFunction, Response, Router } from 'express';
 import { Validation } from '@helpers';
-import { NextFunction, Router, response } from 'express';
 import { createTodoValidator } from '@validators';
 import { TodoItem } from '@models';
 import {
@@ -9,19 +9,19 @@ import {
   ExtendedRequest,
   ValidationFailure,
 } from '@typings';
-import { Response } from 'express-serve-static-core';
 
 export class TodoController extends BaseController {
-  public todoRoute: String = '/todos';
+  public basePath: string = '/todos';
   public router: Router = Router();
 
   constructor(ctx: AppContext) {
     super(ctx);
     this.initializeRoutes();
   }
+
   private initializeRoutes() {
     this.router.post(
-      `/todos`,
+      `${this.basePath}`,
       createTodoValidator(this.appContext),
       this.createTodo
     );
@@ -41,10 +41,11 @@ export class TodoController extends BaseController {
       );
       return next(valError);
     }
-    const todo = await this.appContext.todoRepository.save(
-        new TodoItem(req.body)
-      )
-      res.status(201).send(todo.title);
-    }
-  };
 
+    const { title } = req.body;
+    const todo = await this.appContext.todoRepository.save(
+      new TodoItem({ title })
+    );
+    res.status(201).send(todo.serialize());
+  };
+}
