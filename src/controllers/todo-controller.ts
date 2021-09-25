@@ -1,7 +1,7 @@
 import { BaseController } from './base-controller';
 import { NextFunction, Response, Router } from 'express';
 import { Validation } from '@helpers';
-import { createTodoValidator } from '@validators';
+import { createTodoValidator, deleteTodoValidator } from '@validators';
 import { TodoItem } from '@models';
 import {
   AppContext,
@@ -25,6 +25,11 @@ export class TodoController extends BaseController {
       createTodoValidator(this.appContext),
       this.createTodo
     );
+    this.router.delete(
+      `${this.basePath}/:id`,
+      deleteTodoValidator(this.appContext),
+      this.deleteTodo
+    );
   }
 
   private createTodo = async (
@@ -47,5 +52,27 @@ export class TodoController extends BaseController {
       new TodoItem({ title })
     );
     res.status(201).send(todo.serialize());
+  };
+
+  private deleteTodo = async (
+    req: ExtendedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const failures: ValidationFailure[] =
+      Validation.extractValidationErrors(req);
+    if (failures.length > 0) {
+      const valError = new Errors.ValidationError(
+        res.__('DEFAULT_ERRORS.VALIDATION_FAILED'),
+        failures
+      );
+      return next(valError);
+    }
+
+    const { iden } = req.params;
+    const deleteTodo = await this.appContext.todoRepository.deleteMany({
+      id: iden,
+    });
+    res.status(201).send(deleteTodo);
   };
 }
