@@ -3,7 +3,7 @@ import { check, ValidationChain } from 'express-validator';
 import { AppContext } from '@typings';
 
 const deleteTodoValidator = (appContext: AppContext): ValidationChain[] => [
-  check('id', 'VALIDATION_ERRORS.INVALID_ID').isMongoId(),
+  check('id', 'The specified todo ID is not a valid one. Please provide a valid one.').isMongoId(),
   check('id')
     .custom(async id => {
       const deleteItem = await appContext.todoRepository.findOne({
@@ -13,7 +13,7 @@ const deleteTodoValidator = (appContext: AppContext): ValidationChain[] => [
         return Promise.reject();
       }
     })
-    .withMessage('VALIDATION_ERRORS.ID_NOT_FOUND'),
+    .withMessage('The specified todo ID is not a valid one. Please provide a valid one.'),
 ];
 
 export default deleteTodoValidator;

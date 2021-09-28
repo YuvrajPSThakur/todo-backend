@@ -73,6 +73,6 @@ export class TodoController extends BaseController {
     const deleteTodo = await this.appContext.todoRepository.deleteMany({
       id: iden,
     });
-    res.status(201).send(deleteTodo);
+    res.status(204).send(deleteTodo);
   };
 }

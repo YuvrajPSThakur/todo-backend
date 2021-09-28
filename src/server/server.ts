@@ -27,27 +27,28 @@ mongoStore
   .then(() => {
     logger.info('www - Connection to Mongo Store succeeded...');
     const app = new App(appContext);
+    console.log("DB connected");
     const server = app.listen();
     appContext.logger.info('www - Server started...');
     process.on('SIGINT', () => {
       appContext.logger.info(
-        'www - sigint event received, attempting to shut down application...',
+        'www - sigint event received, attempting to shut down application...'
       );
-      server.close((err) => {
+      server.close(err => {
         if (err) {
           appContext.logger.error(
-            `www - encountered error while shutting down server - ${err.message}`,
+            `www - encountered error while shutting down server - ${err.message}`
           );
           process.exit(1);
         } else {
           appContext.logger.info(
-            'www - server was closed gracefully, shutting down...',
+            'www - server was closed gracefully, shutting down...'
           );
           process.exit(0);
         }
       });
     });
   })
-  .catch((err) => {
+  .catch(err => {
     logger.error(`Error starting HTTP server: ${err.message}`);
   });
