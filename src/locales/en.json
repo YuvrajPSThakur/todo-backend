@@ -11,9 +11,14 @@
     "INVALID_FIRSTNAME": "Please specify first name.",
     "INVALID_LASTNAME": "Please specify last name.",
     "PASSWORD_MISSING": "Please provide a password.",
-    "DUPLICATE_EMAIL": "The email you provided is already taken. Please provide a different one."
+    "DUPLICATE_EMAIL": "The email you provided is already taken. Please provide a different one.",
+    "INVALID_TITLE": "VALIDATION_ERRORS.INVALID_TITLE",
+    "DUPLICATE_ENTRY": "VALIDATION_ERRORS.DUPLICATE_ENTRY",
+    "INVALID_ID": "VALIDATION_ERRORS.INVALID_ID"
   },
   "MESSAGES": {
     "HEALTHCHECK": "OK"
-  }
+  },
+  "Cast to ObjectId failed for value \"2114071\" at path \"_id\" for model \"TodoItem\"": "Cast to ObjectId failed for value \"2114071\" at path \"_id\" for model \"TodoItem\"",
+  "The specified todo ID is not a valid one. Please provide a valid one.": "The specified todo ID is not a valid one. Please provide a valid one."
 }
