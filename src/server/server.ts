@@ -27,7 +27,6 @@ mongoStore
   .then(() => {
     logger.info('www - Connection to Mongo Store succeeded...');
     const app = new App(appContext);
-    console.log("DB connected");
     const server = app.listen();
     appContext.logger.info('www - Server started...');
     process.on('SIGINT', () => {

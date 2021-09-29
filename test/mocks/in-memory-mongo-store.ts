@@ -10,8 +10,6 @@ export class InMemoryMongoStore extends Mongoose.MongoStore {
   public async connect(): Promise<M> {
     const mongod = new MongoMemoryServer();
     const uri = await mongod.getUri();
-    console.log('DB initiadted');
-
     const options = {
       useNewUrlParser: true,
       useCreateIndex: true,

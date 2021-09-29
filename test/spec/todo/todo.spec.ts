@@ -1,11 +1,10 @@
-require ('module-alias/register');
+require('module-alias/register');
 import chai from 'chai';
 import chaiHttp from 'chai-http';
 import { Application } from 'express';
 import { TodoItem } from '../../../src/models';
 import { App } from '../../../src/server';
 import { respositoryContext, testAppContext } from '../../mocks/app-context';
-
 
 chai.use(chaiHttp);
 const expect = chai.expect;
@@ -14,7 +13,6 @@ let expressApp: Application;
 before(async () => {
   //await respositoryContext.store.connect();
   const app = new App(testAppContext);
-  
 
   app.initializeMiddlewares();
   app.initializeControllers();
@@ -70,8 +68,10 @@ describe('DELETE /todos/:id', () => {
     const todoItem = await testAppContext.todoRepository.save(
       new TodoItem({ title: 'Title to be deleted' })
     );
-    const res = await chai.request(expressApp).delete(`/todos/${todoItem._id}`);
 
+    const res = await chai.request(expressApp).delete(`/todos/${todoItem._id}`);
+    const checker = await  testAppContext.todoRepository.findOne({ _id: todoItem._id });
+    if(checker._id)expect(res).to.have.status(404);
     expect(res).to.have.status(204);
   });
 
@@ -89,7 +89,7 @@ describe('DELETE /todos/:id', () => {
 describe('PUT /todos/:id', () => {
   it('should return 200 if todo exists & id is valid mongo id & title is not empty', async () => {
     const todoItem = await testAppContext.todoRepository.save(
-      new TodoItem({title: 'Todo Item Added'})
+      new TodoItem({ title: 'Todo Item Added' })
     );
     const res = await chai
       .request(expressApp)
@@ -100,11 +100,11 @@ describe('PUT /todos/:id', () => {
     expect(res).to.have.status(200);
     expect(res.body).to.have.property('id');
     expect(res.body).to.have.property('title');
-  })
+  });
 
   it('should return 400 if todo exists & id is valid mongo id & title is empty', async () => {
     const todoItem = await testAppContext.todoRepository.save(
-      new TodoItem({title: 'Todo Item Added'})
+      new TodoItem({ title: 'Todo Item Added' })
     );
     const res = await chai
       .request(expressApp)
@@ -116,15 +116,12 @@ describe('PUT /todos/:id', () => {
     expect(res.body)
       .to.have.nested.property('failures[0].message')
       .to.equal('VALIDATION_ERRORS.INVALID_TITLE');
-  })
+  });
 
   it('should return 400 if id is invalid mongo id', async () => {
-    const res = await chai
-      .request(expressApp)
-      .put(`/todos/hdjkfffm8efe`)
-      .send({
-        title: 'id not valid',
-      });
+    const res = await chai.request(expressApp).put(`/todos/hdjkfffm8efe`).send({
+      title: 'id not valid',
+    });
     expect(res).to.have.status(400);
     expect(res.body)
       .to.have.nested.property('failures[0].message')
@@ -142,56 +139,52 @@ describe('PUT /todos/:id', () => {
   });
 });
 
-
-describe("GET /todos/:id", () => {
-  it("should fetch a todo item if it exists and if id is valid mongo id", async () => {
+describe('GET /todos/:id', () => {
+  it('should fetch a todo item if it exists and if id is valid mongo id', async () => {
     const todoItem = await testAppContext.todoRepository.save(
-      new TodoItem({ title: "Fetching an item" })
+      new TodoItem({ title: 'Fetching an item' })
     );
 
     const res = await chai.request(expressApp).get(`/todos/${todoItem._id}`);
     expect(res).to.have.status(200);
-    expect(res.body).to.have.property("id");
-    expect(res.body).to.have.property("title");
+    expect(res.body).to.have.property('id');
+    expect(res.body).to.have.property('title');
   });
 
-  it("Should return a validation error if id is invalid mongo id", async () => {
-    const res = await chai.request(expressApp).get("/todos/befji47crhjehr");
+  it('Should return a validation error if id is invalid mongo id', async () => {
+    const res = await chai.request(expressApp).get('/todos/befji47crhjehr');
     expect(res).to.have.status(400);
     expect(res.body)
-      .to.have.nested.property("failures[0].message")
-      .to.equal("VALIDATION_ERRORS.INVALID_ID");
+      .to.have.nested.property('failures[0].message')
+      .to.equal('VALIDATION_ERRORS.INVALID_ID');
   });
 
-  it("should return a 404 if todo item does not exists", async () => {
+  it('should return a 404 if todo item does not exists', async () => {
     const res = await chai
       .request(expressApp)
-      .get("/todos/605bb3efc93d78b7f4388c2c");
+      .get('/todos/605bb3efc93d78b7f4388c2c');
 
     expect(res).to.have.status(404);
   });
 });
 
-describe("GET /todos", () => {
-  it("should have got all the todo items", async () => {
-    const res = await chai.request(expressApp).get("/todos");
+describe('GET /todos', () => {
+  it('should have got all the todo items', async () => {
+    const res = await chai.request(expressApp).get('/todos');
 
     expect(res).to.have.status(200);
-    expect(res.body).to.be.an("array");
+    expect(res.body).to.be.an('array');
   });
 
-  it("should check if the array returned is empty when there are no todo items", async () => {
+  it('should check if the array returned is empty when there are no todo items', async () => {
     await testAppContext.todoRepository.getAll();
 
     await testAppContext.todoRepository.deleteMany({});
 
-    const res = await chai.request(expressApp).get("/todos");
+    const res = await chai.request(expressApp).get('/todos');
 
     expect(res).to.have.status(200);
-    expect(res.body).to.be.an("array");
+    expect(res.body).to.be.an('array');
     expect(res.body).to.deep.equal([]);
   });
 });
-
-
-

@@ -45,10 +45,7 @@ export class TodoController extends BaseController {
       fetchTodoValidator(this.appContext),
       this.fetchTodo
     );
-    this.router.get(
-      `${this.basePath}`,
-      this.listTodoItems
-    );
+    this.router.get(`${this.basePath}`, this.listTodoItems);
   }
 
   private createTodo = async (
@@ -111,7 +108,7 @@ export class TodoController extends BaseController {
     const { id } = req.params;
     const { title } = req.body;
     const todo = await this.appContext.todoRepository.update(
-      {_id: id},
+      { _id: id },
       { $set: { title } }
     );
     if (todo?._id) {
@@ -129,11 +126,12 @@ export class TodoController extends BaseController {
     res: Response,
     next: NextFunction
   ) => {
-    const failures: ValidationFailure[] = Validation.extractValidationErrors(req);
+    const failures: ValidationFailure[] =
+      Validation.extractValidationErrors(req);
     if (failures.length > 0) {
       const valError = new Errors.ValidationError(
         res.__('DEFAULT_ERRORS.VALIDATION_FAILED'),
-        failures,
+        failures
       );
       return next(valError);
     }
@@ -143,7 +141,7 @@ export class TodoController extends BaseController {
       res.status(200).json(todo.serialize());
     } else {
       const valError = new Errors.NotFoundError(
-        res.__("DEFAULT_ERRORS.VALIDATION_FAILED")
+        res.__('DEFAULT_ERRORS.VALIDATION_FAILED')
       );
       next(valError);
     }
@@ -151,18 +149,19 @@ export class TodoController extends BaseController {
   private listTodoItems = async (
     req: ExtendedRequest,
     res: Response,
-    next: NextFunction,
+    next: NextFunction
   ) => {
-    const failures: ValidationFailure[] = Validation.extractValidationErrors(req);
+    const failures: ValidationFailure[] =
+      Validation.extractValidationErrors(req);
     if (failures.length > 0) {
       const valError = new Errors.ValidationError(
         res.__('DEFAULT_ERRORS.VALIDATION_FAILED'),
-        failures,
+        failures
       );
       return next(valError);
     }
 
     const todoItems = await this.appContext.todoRepository.getAll({});
     res.status(200).send(todoItems);
-  }
+  };
 }
